@@ -1,2 +1,11 @@
-package org.example.ecommerce_userservice.repositories;public class UserRepository {
+package org.example.ecommerce_userservice.repositories;
+
+import org.example.ecommerce_userservice.models.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByEmail(String email);
+
 }

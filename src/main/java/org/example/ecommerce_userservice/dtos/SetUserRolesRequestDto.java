@@ -1,2 +1,12 @@
-package org.example.ecommerce_userservice.dtos;public class SetUserRolesRequestDto {
+package org.example.ecommerce_userservice.dtos;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
+@Getter
+@Setter
+
+public class SetUserRolesRequestDto {
+    private List<Long> roleIds;
 }
