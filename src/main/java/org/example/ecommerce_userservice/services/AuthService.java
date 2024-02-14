@@ -1,5 +1,6 @@
 package org.example.ecommerce_userservice.services;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.example.ecommerce_userservice.dtos.UserDto;
 import org.example.ecommerce_userservice.models.Session;
 import org.example.ecommerce_userservice.models.SessionStatus;
@@ -7,6 +8,7 @@ import org.example.ecommerce_userservice.models.User;
 import org.example.ecommerce_userservice.repositories.SessionRepository;
 import org.example.ecommerce_userservice.repositories.UserRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,10 +17,12 @@ import java.util.Optional;
 public class AuthService {
     private UserRepository userRepository;
     private SessionRepository sessionRepository;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public AuthService(UserRepository userRepository, SessionRepository sessionRepository) {
+    public AuthService(UserRepository userRepository, SessionRepository sessionRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
         this.sessionRepository = sessionRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     public ResponseEntity<UserDto> login(String email, String password) {
@@ -27,9 +31,21 @@ public class AuthService {
             return null;
         }
         User user = userOptional.get();
-        if(user.getPassword().equals(password)){
+//        bCryptPasswordEncoder.matches(password, user.getPassword());
+//        if(user.getPassword().equals(password)){
+//            return null;
+//        } // or
+        if(!bCryptPasswordEncoder.matches(password, user.getPassword())){
             return null;
         }
+
+        String token = RandomStringUtils.randomAlphanumeric(30 );
+        Session session = new Session();
+
+        session.setSessionStatus(SessionStatus.ACTIVE);
+        session.setUser(user);
+        session.setToken(token);
+        sessionRepository.save(session);
         return ResponseEntity.ok(UserDto.from(user));
     }
 
@@ -49,7 +65,8 @@ public class AuthService {
 
         User user = new User();
         user.setEmail(email);
-        user.setPassword(password);
+        //user.setPassword(password);
+        user.setPassword(bCryptPasswordEncoder.encode(password)); //to hash the password
         User savedUser = userRepository.save(user);
 
         return UserDto.from(savedUser);
