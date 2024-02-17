@@ -10,7 +10,7 @@ import java.time.Instant;
 Client Id
 Token
 Expiry
-Created At
+Created At // these are need for our token use case to validate the token
  */
 
 @Entity

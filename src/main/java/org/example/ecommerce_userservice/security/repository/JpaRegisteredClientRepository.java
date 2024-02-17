@@ -31,7 +31,7 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
         Assert.notNull(clientRepository, "clientRepository cannot be null");
         this.clientRepository = clientRepository;
 
-        ClassLoader classLoader = JpaRegisteredClientRepository.class.getClassLoader();
+       ClassLoader classLoader = JpaRegisteredClientRepository.class.getClassLoader();
         List<Module> securityModules = SecurityJackson2Modules.getModules(classLoader);
         this.objectMapper.registerModules(securityModules);
         this.objectMapper.registerModule(new OAuth2AuthorizationServerJackson2Module());

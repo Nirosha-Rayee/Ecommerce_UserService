@@ -29,12 +29,12 @@ import java.util.Optional;
 public class AuthService {
     private UserRepository userRepository;
     private SessionRepository sessionRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+   // private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public AuthService(UserRepository userRepository, SessionRepository sessionRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public AuthService(UserRepository userRepository, SessionRepository sessionRepository) {
         this.userRepository = userRepository;
         this.sessionRepository = sessionRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+       // this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     public ResponseEntity<UserDto> login(String email, String password) {
@@ -50,10 +50,13 @@ public class AuthService {
 //        if(user.getPassword().equals(password)){
 //            return null;
 //        } // or
+
         //4. validate the password
-        if(!bCryptPasswordEncoder.matches(password, user.getPassword())){
-            return null;
-        }
+//        if(!bCryptPasswordEncoder.matches(password, user.getPassword())){
+//            return null;
+//        }
+
+
         //5. we are trying to generate a token using RandomStringUtils
 
         //String token = RandomStringUtils.randomAlphanumeric(30 ); //before using the JWT for token generation
@@ -139,7 +142,7 @@ public class AuthService {
         User user = new User();
         user.setEmail(email);
         //user.setPassword(password);
-        user.setPassword(bCryptPasswordEncoder.encode(password)); //to hash the password
+       // user.setPassword(bCryptPasswordEncoder.encode(password)); //to hash the password
         User savedUser = userRepository.save(user);
 
         return UserDto.from(savedUser);
@@ -157,10 +160,11 @@ public class AuthService {
         MacAlgorithm alg = Jwts.SIG.HS256;
         SecretKey key = alg.key().build();
 
+        //verify the token with the key
         Claims claims =
                 Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
 
-//        if(exiprytime > currentdate) {
+//        if(exiprytime > currentdate) { // i can put more details here to check the token like expiry time,check for roles, etc
 //
 //        }
         // check login device

@@ -10,14 +10,14 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SpringSecurity {
     // --- Client-----Spring Security----- Controller
 
-    @Bean
-    public SecurityFilterChain filteringCriteria(HttpSecurity http) throws Exception {
-        http.cors().disable();
-        http.csrf().disable();
-
-        http.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
-        return http.build();
-    }
+//    @Bean
+//    public SecurityFilterChain filteringCriteria(HttpSecurity http) throws Exception {
+//         http.cors().disable();
+//         http.csrf().disable();
+//
+//        http.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
+//        return http.build();
+//    }
 
     // Role Service which two different DB Production and Staging
     /*
