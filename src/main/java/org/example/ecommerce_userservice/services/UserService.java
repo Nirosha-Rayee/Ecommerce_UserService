@@ -23,11 +23,15 @@ public class UserService {
     }
 
     public UserDto getUserDetails(Long userId) {
-        Optional<User> userOptional = userRepository.findById(userId);
-        if(userOptional.isEmpty()){
-            return null;
-        }
-        return UserDto.from(userOptional.get());
+        System.out.println("I got a request");
+
+        return new UserDto();
+
+//        Optional<User> userOptional = userRepository.findById(userId);
+//        if(userOptional.isEmpty()){
+//            return null;
+//        }
+//        return UserDto.from(userOptional.get()); //comment out for to get call from product service
 
     }
 

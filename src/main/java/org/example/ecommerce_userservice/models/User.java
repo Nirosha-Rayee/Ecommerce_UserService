@@ -1,5 +1,6 @@
 package org.example.ecommerce_userservice.models;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import lombok.Getter;
@@ -11,6 +12,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@JsonDeserialize(as = User.class)
 
 public class User extends BaseModel{
     private String email;
