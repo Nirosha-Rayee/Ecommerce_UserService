@@ -178,9 +178,12 @@ public class AuthService {
 
 }*/
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.MacAlgorithm;
+import org.example.ecommerce_userservice.clients.KafkaProducerClient;
+import org.example.ecommerce_userservice.dtos.SendEmailMessageDto;
 import org.example.ecommerce_userservice.dtos.UserDto;
 import org.example.ecommerce_userservice.models.Session;
 import org.example.ecommerce_userservice.models.SessionStatus;
@@ -200,15 +203,20 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class AuthService {
+public class  AuthService {
     private UserRepository userRepository;
     private SessionRepository sessionRepository;
     //private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private KafkaProducerClient kafkaProducerClient;
+    private ObjectMapper objectMapper;
 
-    public AuthService(UserRepository userRepository, SessionRepository sessionRepository) {
+    public AuthService(UserRepository userRepository, SessionRepository sessionRepository,
+                       KafkaProducerClient kafkaProducerClient, ObjectMapper objectMapper) {
         this.userRepository = userRepository;
         this.sessionRepository = sessionRepository;
         //this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.kafkaProducerClient = kafkaProducerClient;
+        this.objectMapper = objectMapper;
     }
 
     public ResponseEntity<UserDto> login(String email, String password) {
@@ -296,7 +304,26 @@ public class AuthService {
 
         User savedUser = userRepository.save(user);
 
-        return UserDto.from(savedUser);
+        UserDto userDto = UserDto.from(savedUser); //but needs to send json representation of the userdto. so, we need to convert it to string using class called objectmapper
+
+        try{
+        kafkaProducerClient.sendMessage("userSignUp", objectMapper.writeValueAsString(userDto));
+
+        SendEmailMessageDto emailMessage = new SendEmailMessageDto();
+        emailMessage.setTo(userDto.getEmail());
+        emailMessage.setFrom("admin@scaler.com");
+        emailMessage.setSubject("Welcome to Scaler");
+        emailMessage.setBody("Thanks for creating an account. We look forward to you growing. Team Scaler");
+        kafkaProducerClient.sendMessage("sendEmail", objectMapper.writeValueAsString(emailMessage));
+
+
+
+        } catch (Exception e) {
+            System.out.println("Something went wrong while sending message to kafka");
+        }
+
+        //return UserDto.from(savedUser);
+        return userDto;
     }
 
     public SessionStatus validate(String token, Long userId) {
@@ -320,3 +347,10 @@ public class AuthService {
     }
 
 }
+// we have to send the email to user in this format. so, we need a dto for this ,SendEmailMessageDto.
+// {
+//   to: "",
+//   from: "",
+//   subject: "",
+//   body: ""
+// }

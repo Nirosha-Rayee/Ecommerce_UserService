@@ -7,7 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-public class SpringSecurity {
+public class  SpringSecurity {
     // --- Client-----Spring Security----- Controller
 
 //    @Bean

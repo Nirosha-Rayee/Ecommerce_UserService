@@ -25,7 +25,7 @@ public class UserService {
     public UserDto getUserDetails(Long userId) {
         System.out.println("I got a request");
 
-        return new UserDto();
+       return new UserDto();
 
 //        Optional<User> userOptional = userRepository.findById(userId);
 //        if(userOptional.isEmpty()){

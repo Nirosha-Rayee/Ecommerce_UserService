@@ -93,36 +93,36 @@ package org.example.ecommerce_userservice.security;
 //        return http.build();
 //    }
 //
-////    @Bean
-////    public UserDetailsService userDetailsService() {
-////        UserDetails userDetails = User.builder() //UserDetails userDetails = User.withDefaultPasswordEncoder()  // previous
-////                .username("user")
-////                .password(bCryptPasswordEncoder.encode("password"))
-////                .roles("USER")
-////                .build();
-////
-////        return new InMemoryUserDetailsManager(userDetails);
-////    } // we want our own userDetailsService to be used .so, created the custom spring userdetails service class.
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        UserDetails userDetails = User.builder() //UserDetails userDetails = User.withDefaultPasswordEncoder()  // previous
+//                .username("user")
+//                .password(bCryptPasswordEncoder.encode("password"))
+//                .roles("USER")
+//                .build();
 //
-////    @Bean
-////    public RegisteredClientRepository registeredClientRepository() {
-////        RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
-////                .clientId("productservice")
-////                .clientSecret(bCryptPasswordEncoder.encode("passwordofproductserviceclient"))
-////                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-////                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-////                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-////                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-////                .redirectUri("http://127.0.0.1:8080/login/oauth2/code/oidc-client")
-////               .redirectUri("https://oauth.pstmn.io/v1/callback")
-////                .postLogoutRedirectUri("http://127.0.0.1:8080/")
-////                .scope(OidcScopes.OPENID)
-////                .scope(OidcScopes.PROFILE)
-////                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
-////                .build();
-////
-////        return new InMemoryRegisteredClientRepository(oidcClient); //here it is in memory. in real world, it will be in db.so, follow the documentation of spring authorization server JPA.
-////    }
+//        return new InMemoryUserDetailsManager(userDetails);
+//    } // we want our own userDetailsService to be used .so, created the custom spring userdetails service class.
+
+//    @Bean
+//    public RegisteredClientRepository registeredClientRepository() {
+//        RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
+//                .clientId("client")
+//                .clientSecret(bCryptPasswordEncoder.encode("secret"))
+//                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+//                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+//                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+//                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+//                .redirectUri("http://127.0.0.1:8080/login/oauth2/code/oidc-client")
+//               .redirectUri("https://oauth.pstmn.io/v1/callback")
+//                .postLogoutRedirectUri("http://127.0.0.1:8080/")
+//                .scope(OidcScopes.OPENID)
+//                .scope(OidcScopes.PROFILE)
+//                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
+//                .build();
+//
+//        return new InMemoryRegisteredClientRepository(oidcClient); //here it is in memory. in real world, it will be in db.so, follow the documentation of spring authorization server JPA.
+//    }
 //
 //
 //
@@ -276,7 +276,11 @@ public class SecurityConfig {
                 )
                 // Form login handles the redirect to the login page from the
                 // authorization server filter chain
-                .formLogin(Customizer.withDefaults());
+                .formLogin(Customizer.withDefaults())
+                .csrf().disable()
+                .cors().disable();
+
+
 
         return http.build();
     }
